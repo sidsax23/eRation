@@ -10,9 +10,11 @@ from .models import users_table
 def login(request):
     #Decoding binary data to json, then covnerting from json to python dictionary
     data = json.loads(request.body.decode('utf-8'))
-    email=data['email']
+    user_id=data['userId']
     password=data['password']
-    user = users_table.objects.filter(email=email,password=password).values()
+    userType=data['type']
+    print(user_id,password,userType)
+    user = users_table.objects.filter(user_id=user_id,password=password,type=userType).values()
     if user:
         return Response({"message":user[0]["type"]+" Logged In!"})
     else:

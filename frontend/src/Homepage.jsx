@@ -148,7 +148,7 @@ function Homepage()
               </ListItemButton>
               <Collapse in={chOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    <ListItemText primary="Step 1 : Login to the website by entering the mobile number and ration card number." />
+                    <ListItemText primary="Step 1 : Login to the website by entering your ration card number and password." />
                     <ListItemText primary="Step 2 : Select the shop and the desired items." />
                     <ListItemText primary="Step 3 : Confirm the order and generate the order history." />
                     <ListItemText primary="Step 4 : Provide feedback. (Optional)" />       
@@ -170,7 +170,7 @@ function Homepage()
               </ListItemButton>
               <Collapse in={soOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    <ListItemText primary="Step 1 : Login by entering the mobile number and license number." />
+                    <ListItemText primary="Step 1 : Login by entering your license number and password." />
                     <ListItemText primary="Step 2 : Update the shop timings and edit stock details." />
                     <ListItemText primary="Step 3 : Confirm the order received by the customer." />     
                 </List>

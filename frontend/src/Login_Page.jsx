@@ -1,14 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Card from '@mui/material/Card';
 import {TextField,FormControl, CardContent,Typography,
-        InputLabel,OutlinedInput, InputAdornment,IconButton,Button,Box } from '@mui/material';
+        InputLabel,OutlinedInput, InputAdornment,IconButton,Button,Box,Select,MenuItem } from '@mui/material';
 import {createTheme,ThemeProvider} from '@mui/material/styles';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Collapse from '@mui/material/Collapse';
 import {Link} from 'react-router-dom';
 import axios from 'axios'
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
 import Modal from '@mui/material/Modal';
+import Alert from '@mui/material/Alert';
 import './index.css'
 
 function LoginPage()
@@ -37,38 +39,77 @@ function LoginPage()
         },
       });
 
-    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [forgotPassword,setForgotPassword] = useState(false);
+    const [alert, setAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState(null);
     const [user,setUser] = useState({
-        email:null,
-        password:null
+        userId:null,
+        pasword:null,
+        type:'Customer'
     }) ;
 
+    const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    function handleChange(e) 
+    function handleChange(e)
     {
-        setUser(user => ({
-             ...user,
-             [e.target.name]:e.target.value
-           }));
+        if (e.target.name === "userId") 
+        {
+            
+            if(e.target.value === "" || Number(e.target.value))
+            {
+                
+                setUser(user => ({
+                    ...user,
+                    ['userId']:e.target.value
+                  }));
+            }
+        }
+        else
+        {
+            
+            setUser(user => ({
+                ...user,
+                [e.target.name]:e.target.value
+              }));
+        }
     }
 
     async function login(e)
     {
         e.preventDefault();
-        setLoading(true);
-        const response = await axios.post(process.env.REACT_APP_USER_URL+"login/", JSON.stringify(user));
-        setLoading(false);
-        alert(response.data.message);
+        if(user.type=='Customer'&&!rationFormat.test(user.userId))
+        {
+            setAlertMessage("Invalid. Please enter a 10 digit ration card number.")
+            setAlert(true);
+        }
+        else if(user.type=='Shopkeeper'&&!licenseFormat.test(user.userId))
+        {
+            setAlertMessage("Invalid. Please enter a 12 digit license number.")
+            setAlert(true);
+        }
+        else
+        {
+            setLoading(true);
+            const response = await axios.post(process.env.REACT_APP_USER_URL+"login/", JSON.stringify(user));
+            setLoading(false);
+            console.log(response.data.message);
+        }
     }
 
-    function recoverPassword(e)
-    {
-        e.preventDefault();
-        alert("Please check email");
-    }
+    // The alert is displayed for a fixed amount of time only
+    useEffect(() => {
+        setTimeout(() => {
+          setAlert(false);
+        }, 5000);
+      }, [alert]);     
+        
+
+    // Ration Card Format
+    const rationFormat = new RegExp('^[0-9]{10}$')
+
+    // License Number Format
+    const licenseFormat = new RegExp('^[0-9]{12}$')
 
     return(
         <body style={{textAlign:'center', backgroundColor:'var(--bgColor)'}}>        
@@ -80,35 +121,34 @@ function LoginPage()
                     <Typography sx={{ fontSize: 25 }} color="var(--orange)" gutterBottom>
                      Sign in                
                     </Typography>
+                    <br/>  
+                    <form id='loginForm' onSubmit={login}>
+                    <FormControl sx={{ m: 1, width: '35ch' }}>
+                      <InputLabel color="orange" id="user-type-select-label">Type</InputLabel>
+                      <Select
+                        color="orange"
+                        labelId="user-type-select-label"
+                        id="user-type-select"
+                        value={user.type}
+                        label="Type"
+                        name="type"
+                        onChange={handleChange}
+                      >
+                        <MenuItem value='Customer'>Customer</MenuItem>
+                        <MenuItem value='Shopkeeper'>Shop Owner</MenuItem>
+                      </Select>
+                    </FormControl>
                     <br/>
-                    {
-
-                        forgotPassword
-
-                        ?
-
-                        <form id='recoverPasswordForm' onSubmit={recoverPassword}>
-                        <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
-                            <TextField color="orange" required  type='email' name="email" onChange={handleChange} id="outlined-required"  label="Email" defaultValue=""/>
-                        </FormControl>
-                        <br/>
-                        <br/>
-                        <Button style={{textDecoration:'none',color:'var(--orange)',textAlign:'left'}} onClick={()=>{setForgotPassword(false)}}>Back to login</Button>
-                        <br/>
-                        <br/>
-                        <Button style={{backgroundColor:'var(--orange)'}} type="submit" variant="contained">Recover Password</Button>
-                        </form>
-
-                        :
-
-                        <form id='loginForm' onSubmit={login}>
-                        <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
-                            <TextField color="orange" required type='email' name="email" onChange={handleChange} id="outlined-required"  label="Email" defaultValue=""/>
-                        </FormControl>
-                        <br/>
-                        <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
+                    <br/>
+                    <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
+                       <TextField variant="outlined" color="orange" required name="userId" value={user.userId} onChange={handleChange} id="userId_input"                      
+                            label={user.type=='Customer' ? 'Ration Card Number' : 'License Number'}
+                        />
+                    </FormControl>
+                    <br/>    
+                    <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
                             <InputLabel color="orange" htmlFor="outlined-adornment-password">Password</InputLabel>
-                            <OutlinedInput color="orange" required name="password" onChange={handleChange} id="outlined-adornment-password"
+                            <OutlinedInput color="orange" required name="password" value={user.pasword} onChange={handleChange} id="outlined-adornment-password"
                                 type={showPassword ? 'text' : 'password'}
                                 endAdornment=
                                 {
@@ -120,15 +160,13 @@ function LoginPage()
                                 }
                                 label="Password"
                             />
-                        </FormControl>
-                        <br/>
-                        <Button style={{textDecoration:'none',color:'var(--orange)',textAlign:'left'}} onClick={()=>{setForgotPassword(true)}}>Forgot Password?</Button>
-                        <br/>
-                        <br/>
-                        <Button style={{backgroundColor:'var(--orange)'}} type="submit" variant="contained">Login</Button>
-                        </form>  
-                    }
-                </CardContent>
+                        </FormControl>              
+                    <br/>
+                    <br/>
+                    
+                    <Button style={{backgroundColor:'var(--orange)'}} type="submit" variant="contained">Login</Button>
+                    </form>                
+                </CardContent>             
             </Card>
             </ThemeProvider>
         </Box>
@@ -138,10 +176,17 @@ function LoginPage()
           <Box sx={style}>
             <CircularProgress />
             <Typography sx={{ mt: 2 }}>
-              Please wait.
+              Please wait
             </Typography>
           </Box>
-        </Modal>
+        </Modal> 
+
+        {/* Alert Popup */}
+        <Collapse in={alert}>
+            <Alert  sx={{width:'fit-content', margin:"1%" }} variant="filled" severity="error" onClose={()=>{setAlert(false)}}>
+                {alertMessage}
+            </Alert>
+        </Collapse>
 
         </body>
 

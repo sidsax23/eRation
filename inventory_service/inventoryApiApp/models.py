@@ -16,7 +16,7 @@ order_status_types=(('Pending','Pending'),('Completed','Completed'))
 
 # FROM USER SERVICE :-
 class users_table(models.Model):
-    user_id = models.AutoField(primary_key=True) # AutoField - auto increment
+    user_id = models.CharField(max_length=20, primary_key=True) # License Number for ShopKeeper / Ration Card Number for Customer
     name = models.CharField(max_length=100)
     email = models.EmailField()
     password = models.CharField(max_length=100)
