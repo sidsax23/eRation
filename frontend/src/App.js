@@ -1,16 +1,20 @@
-import {Box} from '@mui/material';
 import './App.css';
-import LoginPage from './Login_Page'
+import { BrowserRouter as Router,Routes,Route } from 'react-router-dom' 
+import LoginPage from './Login_Page.jsx'
+import Homepage from './Homepage.jsx';
+
 
 function App() {
+
+  
   return (
-    <div className="App">
-      <body>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-          <LoginPage/>
-        </Box>      
-      </body>
-    </div>
+
+    <Router>
+      <Routes>
+        <Route exact path="/" element ={<Homepage />}/>
+        <Route exact path="/login" element ={<LoginPage />}/>
+      </Routes>
+    </Router>   
   );
 }
 

@@ -1,20 +1,30 @@
 import React, {useState} from 'react';
 import Card from '@mui/material/Card';
 import {TextField,FormControl, CardContent,Typography,
-        InputLabel,OutlinedInput, InputAdornment,IconButton,Button } from '@mui/material';
+        InputLabel,OutlinedInput, InputAdornment,IconButton,Button,Box } from '@mui/material';
+import {createTheme,ThemeProvider} from '@mui/material/styles';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {Link} from 'react-router-dom';
 import axios from 'axios'
+import './index.css'
 
 function LoginPage()
 {
+
+    const theme = createTheme({
+        palette: {
+          orange: {
+            main: 'var(--orange)',
+          },
+        },
+      });
 
     const [showPassword, setShowPassword] = useState(false);
     const [forgotPassword,setForgotPassword] = useState(false)
     const [user,setUser] = useState({
         email:null,
-        pass:null
+        password:null
     }) 
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -27,11 +37,11 @@ function LoginPage()
            }));
     }
 
-    function login(e)
+    async function login(e)
     {
         e.preventDefault();
-        //axios.post("http://localhost:8000/user/login",JSON.stringify(user));
-        alert(JSON.stringify(user));
+        const response = await axios.post(process.env.REACT_APP_USER_URL+"login/", JSON.stringify(user));
+        alert(response.data.message);
     }
 
     function recoverPassword(e)
@@ -41,64 +51,69 @@ function LoginPage()
     }
 
     return(
-        
-        <Card sx={{ minWidth: 400 }}>
-            <CardContent>
-                <img src='eRation.png' height='150'/>
-                <Typography sx={{ fontSize: 25 }} color="text.primary" gutterBottom>
-                 Sign in                
-                </Typography>
-                <br/>
-                {
+        <body style={{textAlign:'center', backgroundColor:'var(--bgColor)'}}>        
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+            <ThemeProvider theme={theme}>
+            <Card sx={{ minWidth: 400 }}>
+                <CardContent>
+                    <Link to="/"><img src='eRation.png' height='150' alt="eRation_logo"/></Link>
+                    <Typography sx={{ fontSize: 25 }} color="var(--orange)" gutterBottom>
+                     Sign in                
+                    </Typography>
+                    <br/>
+                    {
 
-                    forgotPassword
+                        forgotPassword
 
-                    ?
-                    
-                    <form id='recoverPasswordForm' onSubmit={recoverPassword}>
-                    <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
-                        <TextField required type='email' name="email" onChange={handleChange} id="outlined-required"  label="Email" defaultValue=""/>
-                    </FormControl>
-                    <br/>
-                    <br/>
-                    <Button style={{textDecoration:'none',color:'blue',textAlign:'left'}} onClick={()=>{setForgotPassword(false)}}>Back to login</Button>
-                    <br/>
-                    <br/>
-                    <Button type="submit" variant="contained">Recover Password</Button>
-                    </form>
+                        ?
 
-                    :
+                        <form id='recoverPasswordForm' onSubmit={recoverPassword}>
+                        <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
+                            <TextField color="orange" required  type='email' name="email" onChange={handleChange} id="outlined-required"  label="Email" defaultValue=""/>
+                        </FormControl>
+                        <br/>
+                        <br/>
+                        <Button style={{textDecoration:'none',color:'var(--orange)',textAlign:'left'}} onClick={()=>{setForgotPassword(false)}}>Back to login</Button>
+                        <br/>
+                        <br/>
+                        <Button style={{backgroundColor:'var(--orange)'}} type="submit" variant="contained">Recover Password</Button>
+                        </form>
 
-                    <form id='loginForm' onSubmit={login}>
-                    <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
-                        <TextField required type='email' name="email" onChange={handleChange} id="outlined-required"  label="Email" defaultValue=""/>
-                    </FormControl>
-                    <br/>
-                    <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
-                        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                        <OutlinedInput required name="pass" onChange={handleChange} id="outlined-adornment-password"
-                            type={showPassword ? 'text' : 'password'}
-                            endAdornment=
-                            {
-                                <InputAdornment position="end"> 
-                                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                            label="Password"
-                        />
-                    </FormControl>
-                    <br/>
-                    <Button style={{textDecoration:'none',color:'blue',textAlign:'left'}} onClick={()=>{setForgotPassword(true)}}>Forgot Password?</Button>
-                    <br/>
-                    <br/>
-                    <Button type="submit" variant="contained">Login</Button>
-                    </form>   
+                        :
 
-                }
-            </CardContent>
-        </Card>
+                        <form id='loginForm' onSubmit={login}>
+                        <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
+                            <TextField color="orange" required type='email' name="email" onChange={handleChange} id="outlined-required"  label="Email" defaultValue=""/>
+                        </FormControl>
+                        <br/>
+                        <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
+                            <InputLabel color="orange" htmlFor="outlined-adornment-password">Password</InputLabel>
+                            <OutlinedInput color="orange" required name="password" onChange={handleChange} id="outlined-adornment-password"
+                                type={showPassword ? 'text' : 'password'}
+                                endAdornment=
+                                {
+                                    <InputAdornment position="end"> 
+                                        <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Password"
+                            />
+                        </FormControl>
+                        <br/>
+                        <Button style={{textDecoration:'none',color:'var(--orange)',textAlign:'left'}} onClick={()=>{setForgotPassword(true)}}>Forgot Password?</Button>
+                        <br/>
+                        <br/>
+                        <Button style={{backgroundColor:'var(--orange)'}} type="submit" variant="contained">Login</Button>
+                        </form>  
+                    }
+                </CardContent>
+            </Card>
+            </ThemeProvider>
+        </Box>
+        </body>
+
     )
 }
 
