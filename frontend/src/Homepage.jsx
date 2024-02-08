@@ -26,15 +26,20 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
+import IconButton from '@mui/material/IconButton';
 import { useState } from 'react'
 
 function Homepage()
 {
 
-    const [open, setOpen] = useState(true);
+    const [chOpen, setChOpen] = useState(false);
+    const [soOpen, setSoOpen] = useState(false);
 
-    const handleClick = () => { setOpen(!open); };
+    const handleChClick = () => { setChOpen(!chOpen); };
+    const handleSoClick = () => { setSoOpen(!soOpen); };
 
     const theme = createTheme(
       {
@@ -46,6 +51,40 @@ function Homepage()
           },
         },
       });
+
+
+
+      const itemData = [
+        {
+          img: './img/Flour.jpg',
+          title: 'Flour',
+          featured: true,
+        },
+        {
+          img: './img/Sugar.jpg',
+          title: 'Sugar',
+    
+        },
+        {
+          img: './img/Moong_Daal.jpg',
+          title: 'Moong Daal',
+        },
+        {
+          img: './img/Rice.jpg',
+          title: 'Rice',
+          cols: 2,
+        },
+        {
+          img: './img/Chana_Daal.jpg',
+          title: 'Chana Daal',
+        },
+        {
+          img: './img/Kerosene.png',
+          title: 'Kerosene',
+          featured: true,
+        },
+      ];
+
 
     return(
         <>
@@ -64,11 +103,11 @@ function Homepage()
               <ul className="main-nav">
                 <li>
                   {" "}
-                  <a href="#section-feat">How It works</a>
+                  <a href="#how_it_works">How It works</a>
                 </li>
                 <li>
                   {" "}
-                  <a href="#section-meal">Ration Items</a>
+                  <a href="#ration_items">Ration Items Available</a>
                 </li>
               </ul>
             </div>
@@ -81,12 +120,12 @@ function Homepage()
             <Link to="login" className="btn btn-full" >
               Log In
             </Link>
-            <a className="btn btn-ghost" href="#summaryy">
+            <a className="btn btn-ghost" href="#know_more">
               Know More
             </a>
           </div>
         </header>
-        <section className="section-features" id="section-feat">
+        <section className="section-features" id="how_it_works">
           <div className="row">
             <h2>Rationing made easy</h2>
             <p style={{textAlign:'center'}}>
@@ -95,27 +134,19 @@ function Homepage()
           </div>
           <br/>
           <br/>
-          <div className="row">
-            <div className="span_1_of_2 box" >            
+          <div className="row">           
                 <List 
-                    sx={{ width: '150%', bgcolor: 'background.paper' }}
+                    sx={{ width: '70%', bgcolor: 'background.paper' }}
                     component="nav"
-                    aria-labelledby="nested-list-subheader"
-                    subheader=
-                    {
-                        <ListSubheader component="div" id="nested-list-subheader">
-                            HOW IT WORKS :
-                        </ListSubheader>
-                    }
                 >
-                <ListItemButton onClick={handleClick}>
+                <ListItemButton onClick={handleChClick}>
                 <ListItemIcon>
                     <CreditCardIcon color='orange'/>
                 </ListItemIcon>
                 <ListItemText primary="For Ration Card Holders" />
-                {open ? <ExpandLess /> : <ExpandMore />}
+                {chOpen ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
-              <Collapse in={open} timeout="auto" unmountOnExit>
+              <Collapse in={chOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <ListItemText primary="Step 1 : Login to the website by entering the mobile number and ration card number." />
                     <ListItemText primary="Step 2 : Select the shop and the desired items." />
@@ -125,77 +156,57 @@ function Homepage()
               </Collapse>
             </List>
             </div>
-          </div>
           <div className="row">
-            <div className="span_2_of_2 box">
-              
-              <h3><StorefrontIcon color='orange'/> For Shop-Owners :</h3>
-              <p>
-                Step1: Login by entering the mobile number as login-Id and license
-                number as password.
-              </p>
-              <p>Step2: Update the shop timings and edit stock details.</p>
-              <p>Step3: Confirm the order received by the customer.</p>
-            </div>
+            <List 
+                    sx={{ width: '70%', bgcolor: 'background.paper' }}
+                    component="nav"
+                >
+                <ListItemButton onClick={handleSoClick}>
+                <ListItemIcon>
+                  <StorefrontIcon color='orange'/>
+                </ListItemIcon>
+                <ListItemText primary="For Shop-Owners" />
+                {soOpen ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+              <Collapse in={soOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                    <ListItemText primary="Step 1 : Login by entering the mobile number and license number." />
+                    <ListItemText primary="Step 2 : Update the shop timings and edit stock details." />
+                    <ListItemText primary="Step 3 : Confirm the order received by the customer." />     
+                </List>
+              </Collapse>
+            </List>
           </div>
         </section>
-        <section className="section-meals" id="section-meal">
-          <ul className="meals-showcase clearfix">
-            <li>
-              <div className="container">
-                <figure className="meal-photo" id="photo1">
-                  <img src="./Static/resources/img/food1.jpeg" alt="food-image" />
-                  <div className="middle">
-                    <div className="text">Flour</div>
-                  </div>
-                </figure>
-              </div>
-            </li>
-            <li>
-              <figure className="meal-photo">
-                <img src="./Static/resources/img/food8.jpeg" alt="food-image" />
-                <div className="middle">
-                  <div className="text">Sugar</div>
-                </div>
-              </figure>
-            </li>
-            <li>
-              <figure className="meal-photo">
-                <img src="./Static/resources\img\moong-dal-chhilke (1).png" alt="food-image" />
-                <div className="middle">
-                  <div className="text">Moong Dal</div>
-                </div>
-              </figure>
-            </li>
-          </ul>
-          <ul className="meals-showcase clearfix">
-            <li>
-              <figure className="meal-photo">
-                <img src="./Static/resources/img/food4.png" alt="shop-image" />
-                <div className="middle">
-                  <div className="text">Rice</div>
-                </div>
-              </figure>
-            </li>
-            <li>
-              <figure className="meal-photo">
-                <img src="./Static/resources/img/food10.png" alt="shop-image" />
-                <div className="middle">
-                  <div className="text">Chana Dal</div>
-                </div>
-              </figure>
-            </li>
-            <li>
-              <figure className="meal-photo">
-                <img src="./Static/resources\img\food14 (1).png" alt="shop-image" />
-                <div className="middle">
-                  <div className="text">Kerosene</div>
-                </div>
-              </figure>
-            </li>
-          </ul>
+        <section className="section-meals" id="ration_items">
+          <div className="row">
+            <h2>Ration Items Available</h2>
+          </div>
+          <ImageList cols={3}>
+            {itemData.map((item) => (
+              <ImageListItem key={item.img}>
+                <img
+                  srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                  src={`${item.img}?w=248&fit=crop&auto=format`}
+                  alt={item.title}
+                  loading="lazy"
+                />
+                <ImageListItemBar
+                  title={item.title}
+                  subtitle={item.author}
+                  actionIcon={
+                    <IconButton
+                      sx={{ color: 'rgba(255, 255, 255, 0.54)' }}
+                      aria-label={`info about ${item.title}`}
+                    >
+                    </IconButton>
+                  }
+                />
+              </ImageListItem>
+            ))}
+          </ImageList>
         </section>
-        <section className="summary" id="summaryy">
+        <section className="summary" id="know_more">
           <br />
           <p></p>
           <div className="row">
@@ -207,25 +218,16 @@ function Homepage()
             Food, and Public Distribution and managed jointly with state governments
             in India. The traditional PDS is used to distribute grocery items to
             India's poor who are valid ration card holders. The validity and the
-            allocation of the ration cards is monitored by the state governments. A
-            ration card holder should be given 35 kg of food grain as per the norms of
-            PDS.However, there are concerns about the efficiency of the distribution
-            process. In order to make it efficient and improve the current system of
-            PDS we are implementing e-Ration Shop. Here we are going to make a website
-            for shopping purpose. Using this website ration card holder can order
-            his/her grocery items from the FPS online. The main reason for using this
-            website is making this process computerized and to remove the drawbacks of
-            the present way of issuing products based on ration card.
+            allocation of the ration cards is monitored by the state governments.
+            However, there are concerns about the efficiency and transparency of the 
+            distribution process. eRation portal aims to address these shortcomings. 
+            Using this portal, any ration card holder can order his/her grocery items online
+            and any shop owner can manage orders received and the inventory of ration items. 
           </p>
           <p />
         </section>
         <div className="footer">
-          <span>
-            <p className="txt">
-              Created by <a href="ASK.html"> Team Tech ASK</a> |{" "}
-              <span className="far fa-copyright" /> 2021 All rights reserved.{" "}
-            </p>{" "}
-          </span>
+              Created by Vaanar Sena | 2024 All rights reserved.
         </div>
         {/* Option 1: Bootstrap Bundle with Popper */}
         {/* Option 2: Separate Popper and Bootstrap JS */}

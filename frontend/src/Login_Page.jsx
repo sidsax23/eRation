@@ -7,11 +7,28 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {Link} from 'react-router-dom';
 import axios from 'axios'
+import CircularProgress from '@mui/material/CircularProgress';
+import Modal from '@mui/material/Modal';
 import './index.css'
 
 function LoginPage()
 {
 
+    // Loading Screen
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        textAlign: 'center'
+      };
+
+    // Theme for input bars
     const theme = createTheme({
         palette: {
           orange: {
@@ -21,11 +38,12 @@ function LoginPage()
       });
 
     const [showPassword, setShowPassword] = useState(false);
-    const [forgotPassword,setForgotPassword] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [forgotPassword,setForgotPassword] = useState(false);
     const [user,setUser] = useState({
         email:null,
         password:null
-    }) 
+    }) ;
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -40,7 +58,9 @@ function LoginPage()
     async function login(e)
     {
         e.preventDefault();
+        setLoading(true);
         const response = await axios.post(process.env.REACT_APP_USER_URL+"login/", JSON.stringify(user));
+        setLoading(false);
         alert(response.data.message);
     }
 
@@ -112,7 +132,20 @@ function LoginPage()
             </Card>
             </ThemeProvider>
         </Box>
+
+        {/* Loading Popup */}
+        <Modal open={loading} onClose={()=>{setLoading(false)}} aria-labelledby="loading-modal">
+          <Box sx={style}>
+            <CircularProgress />
+            <Typography sx={{ mt: 2 }}>
+              Please wait.
+            </Typography>
+          </Box>
+        </Modal>
+
         </body>
+
+        
 
     )
 }
