@@ -23,7 +23,7 @@ const ShopKeeperHome = () =>
 
       const shopsResponse = await axios.post(process.env.REACT_APP_USER_URL+"shop_details/", JSON.stringify({'shop_id':userId})) 
       setShop(shopsResponse.data.shop)
-      setRating(shopsResponse.data.shop.rating)
+      setRating(parseFloat(shopsResponse.data.shop.rating).toFixed(1))
       setInventory(shopsResponse.data.items)
       console.log(shopsResponse.data.items)
   }
@@ -68,7 +68,7 @@ const ShopKeeperHome = () =>
       <Grid container rowSpacing={2} spacing={2} style={{backgroundColor:'var(--bgColor)'}}>
         
         <Grid item xs={6} >  
-          <Card sx={{minHeight:'fit-content', height:300, overflowY:'auto'}} style= {{padding:'1%',width:'99%',marginLeft:'1%'}}>
+          <Card sx={{minHeight:'fit-content', height:300, overflow:'auto'}} style= {{padding:'1%',width:'99%',marginLeft:'1%'}}>
           <div style={{margin:'auto', textAlign: 'center'}}>
           <Typography variant="h5" style={{color:'var(--orange)'}}>
               INVENTORY
@@ -88,7 +88,7 @@ const ShopKeeperHome = () =>
         <Grid item xs={3} >
         <div style={{margin:'auto', textAlign: 'center'}}>
           <Link to="/feedback_page" style={{textDecoration: 'none'}}>
-          <Card sx={{minHeight:'fit-content', height:300, overflowY:'auto'}} style= {{padding:'1%',width:'99%',marginLeft:'1%'}}>
+          <Card sx={{minHeight:'fit-content', height:300, overflow:'auto'}} style= {{padding:'1%',width:'99%',marginLeft:'1%'}}>
           <Typography variant="h5" style={{color:'var(--orange)'}}>
               {shop.name} 
           </Typography> 
@@ -108,7 +108,7 @@ const ShopKeeperHome = () =>
         <Grid item xs={3}>
           <div style={{margin:'auto', textAlign: 'center'}}>
             <Link to="/order_history" style={{textDecoration: 'none'}}>
-              <Card sx={{minHeight:'fit-content', height:300, overflowY:'auto'}} style= {{padding:'1%',width:'98%',marginRight:'2%'}}>
+              <Card sx={{minHeight:'fit-content', height:300, overflow:'auto'}} style= {{padding:'1%',width:'98%',marginRight:'2%'}}>
                 <Typography variant="h1" style={{color:'green'}}>
                   {shop.totalOrdersCount}
                 </Typography>
