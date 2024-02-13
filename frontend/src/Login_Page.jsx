@@ -1,9 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Card from '@mui/material/Card';
 import {TextField,FormControl, CardContent,Typography,
-        InputLabel,OutlinedInput, InputAdornment,IconButton,Button,Box,Select,MenuItem } from '@mui/material';
+        InputLabel,OutlinedInput, InputAdornment,IconButton,Button,Box,Select,MenuItem, Snackbar } from '@mui/material';
 import {createTheme,ThemeProvider} from '@mui/material/styles';
-import Collapse from '@mui/material/Collapse';
 import {Link} from 'react-router-dom';
 import axios from 'axios'
 import Visibility from '@mui/icons-material/Visibility';
@@ -12,9 +11,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Modal from '@mui/material/Modal';
 import Alert from '@mui/material/Alert';
 import './index.css'
+import { useNavigate } from 'react-router-dom';
+import { userContext } from './App';
 
 function LoginPage()
 {
+    // To redirect to user page
+    const navigate = useNavigate();
+    const [userId, userType, setUserType, setUserId] = useContext(userContext);
 
     // Loading Screen
     const style = {
@@ -91,18 +95,24 @@ function LoginPage()
         else
         {
             setLoading(true);
-            const response = await axios.post(process.env.REACT_APP_USER_URL+"login/", JSON.stringify(user));
+            const response = await axios.post(process.env.REACT_APP_USER_URL+"login/", JSON.stringify(user))       
             setLoading(false);
-            console.log(response.data.message);
+            if(response.data.status==200)
+            {
+                localStorage.clear();
+                setUserId(response.data.userId)
+                setUserType(user.type)
+                localStorage.setItem('user-id', response.data.userId);
+                localStorage.setItem('user-type', user.type);
+                navigate('/',{replace:true});
+            }
+            else
+            {
+              setAlertMessage('Incorrect Password or '+(user.type=='Customer'?'Ration Card Number':'License Number')+' Entered')
+              setAlert(true);
+            }      
         }
-    }
-
-    // The alert is displayed for a fixed amount of time only
-    useEffect(() => {
-        setTimeout(() => {
-          setAlert(false);
-        }, 5000);
-      }, [alert]);     
+    }    
         
 
     // Ration Card Format
@@ -112,8 +122,9 @@ function LoginPage()
     const licenseFormat = new RegExp('^[0-9]{12}$')
 
     return(
-        <body style={{textAlign:'center', backgroundColor:'var(--bgColor)'}}>        
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <Box style={{backgroundColor:'var(--bgColor)', height:'100vh'}}>
+        <div style={{textAlign:'center'}}>        
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" height="fit-content">
             <ThemeProvider theme={theme}>
             <Card sx={{ minWidth: 400 }}>
                 <CardContent>
@@ -168,8 +179,10 @@ function LoginPage()
                     </form>                
                 </CardContent>             
             </Card>
-            </ThemeProvider>
+            </ThemeProvider>     
         </Box>
+        </div>
+        
 
         {/* Loading Popup */}
         <Modal open={loading} onClose={()=>{setLoading(false)}} aria-labelledby="loading-modal">
@@ -182,13 +195,14 @@ function LoginPage()
         </Modal> 
 
         {/* Alert Popup */}
-        <Collapse in={alert}>
-            <Alert  sx={{width:'fit-content', margin:"1%" }} variant="filled" severity="error" onClose={()=>{setAlert(false)}}>
+        <Snackbar open={alert} autoHideDuration={5000}>
+            <Alert  sx={{width:'fit-content' }} variant="filled" severity="error" onClose={()=>{setAlert(false)}}>
                 {alertMessage}
             </Alert>
-        </Collapse>
+        </Snackbar>
 
-        </body>
+        </Box>
+
 
         
 

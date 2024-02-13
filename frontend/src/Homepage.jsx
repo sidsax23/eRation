@@ -18,7 +18,6 @@ import { Link } from "react-router-dom";
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import {createTheme,ThemeProvider} from '@mui/material/styles';
-import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -96,10 +95,10 @@ function Homepage()
           href="https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Open+Sans+Condensed:wght@300&display=swap"
           rel="stylesheet"
         />
-        <header>
+        <header > 
           <nav>
-            <div className="row">
-            <Link to="/"><img src='eRation.png' height='150' alt="eRation_logo"/></Link>                    
+            <div className="row" >
+            <Link to="/" ><img src='eRation.png' style={{marginTop:'10px'}} height='150' alt="eRation_logo"/></Link>                    
               <ul className="main-nav">
                 <li>
                   {" "}
@@ -149,8 +148,8 @@ function Homepage()
               <Collapse in={chOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <ListItemText primary="Step 1 : Login to the website by entering your ration card number and password." />
-                    <ListItemText primary="Step 2 : Select the shop and the desired items." />
-                    <ListItemText primary="Step 3 : Confirm the order and generate the order history." />
+                    <ListItemText primary="Step 2 : Select the shop and place order." />
+                    <ListItemText primary="Step 3 : View order status periodically from order history." />
                     <ListItemText primary="Step 4 : Provide feedback. (Optional)" />       
                 </List>
               </Collapse>
@@ -171,8 +170,8 @@ function Homepage()
               <Collapse in={soOpen} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <ListItemText primary="Step 1 : Login by entering your license number and password." />
-                    <ListItemText primary="Step 2 : Update the shop timings and edit stock details." />
-                    <ListItemText primary="Step 3 : Confirm the order received by the customer." />     
+                    <ListItemText primary="Step 2 : Confirm the order received by the customer." />
+                    <ListItemText primary="Step 3 : View feedback. (Optional)" />     
                 </List>
               </Collapse>
             </List>
@@ -227,7 +226,7 @@ function Homepage()
           <p />
         </section>
         <div className="footer">
-              Created by Vaanar Sena | 2024 All rights reserved.
+              Copyright © 2024 eRation
         </div>
         {/* Option 1: Bootstrap Bundle with Popper */}
         {/* Option 2: Separate Popper and Bootstrap JS */}

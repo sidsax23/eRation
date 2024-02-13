@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import date
 # Create your models here.
 
 # -----------
@@ -31,6 +31,8 @@ class orders_table(models.Model):
     order_id = models.AutoField(primary_key=True) # AutoField - auto increment
     customer_id = models.ForeignKey(users_table, on_delete=models.CASCADE, related_name='customer_orders', db_column="customer_id")
     shopkeeper_id = models.ForeignKey(users_table, on_delete=models.CASCADE, related_name='shopkeeper_orders',  db_column="shopkeeper_id")
+    creation_date = models.DateField(default=date.today)
+    completion_date = models.DateField(default=None, blank=True, null = True)
     total_amount = models.FloatField()
     status = models.CharField(max_length=100,choices=order_status_types)
     
@@ -58,12 +60,12 @@ class transactions_table(models.Model):
         
         
 # FROM USER SERVICE :-
-rating_choices = (('One',1),('Two',2),('Three',3),('Four',4),('Five',5))
+# rating_choices = (('One',1),('Two',2),('Three',3),('Four',4),('Five',5))
 class feedback_table(models.Model):
     feedback_id = models.AutoField(primary_key=True) # AutoField - auto increment
     customer_id = models.ForeignKey(users_table, on_delete=models.CASCADE, related_name='customer_feedback', db_column="customer_id")
     shopkeeper_id = models.ForeignKey(users_table, on_delete=models.CASCADE, related_name='shopkeeper_feedback',  db_column="shopkeeper_id")
-    rating = models.IntegerField(choices=rating_choices)
+    rating = models.IntegerField()
     comments = models.CharField(max_length=100)
     
     class Meta:
