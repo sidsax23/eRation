@@ -23,9 +23,14 @@ const ShopKeeperHome = () =>
 
       const shopsResponse = await axios.post(process.env.REACT_APP_USER_URL+"shop_details/", JSON.stringify({'shop_id':userId})) 
       setShop(shopsResponse.data.shop)
-      setRating(parseFloat(shopsResponse.data.shop.rating).toFixed(1))
+      try{
+        setRating(parseFloat(shopsResponse.data.shop.rating).toFixed(1))
+      }
+      catch
+      {
+        setRating(0)
+      }
       setInventory(shopsResponse.data.items)
-      console.log(shopsResponse.data.items)
   }
 
   useEffect(() => {
