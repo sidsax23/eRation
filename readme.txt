@@ -102,3 +102,11 @@ Frontend Pages Structure:
         
         Place Order:
             Allows Cardholder to select items and place an order from a chosen shop.
+
+
+
+Contributors:-(Team- Segment tree)
+1.) Sidharth Saxena
+2.) Rajani Sharma            
+3.) Akshat Singla
+4.) Durgansh Gupta
