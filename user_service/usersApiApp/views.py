@@ -54,7 +54,9 @@ def shop_details(request):
     for x in feedbacks:
         ratings.append(x["rating"])
         reviewCount+=1
-    rating=mean(ratings)
+    rating = 0
+    if len(ratings)>0:
+        rating=mean(ratings)
     
     pendingOrdersCount = orders_table.objects.filter(shopkeeper_id=shop_id,status='Pending').count()
     completed_orders_cnt = orders_table.objects.filter(shopkeeper_id=shop_id,status='Completed').count()
@@ -119,7 +121,9 @@ def shoplist(request):
         ratings=[]
         for x in feedbacks:
             ratings.append(x["rating"])
-        rating=mean(ratings)
+        rating = 0
+        if len(ratings)>0:
+            rating=mean(ratings)
         shops.append({"shop_id":shop,"name":shop_name,"rating":rating})
     return Response({"shops": shops},status=200)
 
