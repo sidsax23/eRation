@@ -13,6 +13,7 @@ const ShopPage = () =>
 {
   const location=useLocation()
   const shop = location.state.shop
+  const [shopRating,setShopRating] = useState(0)
   const [userId, userType, setUserType, setUserId] = useContext(userContext);
   const [correctUserType,setCorrectUserType] = useState(true)
   const [shopItems,setShopItems] = useState([])
@@ -26,11 +27,21 @@ const ShopPage = () =>
   const [snackbarMessage,setSnackbarMessage] = useState("")
   const [loading, setLoading] = useState(false);
 
-  async function fetch_orders()
+  async function fetch_shops()
   {
       const userTypeResponse = await axios.post(process.env.REACT_APP_USER_URL+"details/", JSON.stringify({'user_id':userId})) 
       if(JSON.parse(userTypeResponse.data.serealized_response)[0].fields.type != userType)
         setCorrectUserType(false)
+
+      const shopsResponse = await axios.post(process.env.REACT_APP_USER_URL+"shop_details/", JSON.stringify({'shop_id':shop.shop_id})) 
+      try{
+        setShopRating(shopsResponse.data.shop.rating)
+        console.log(shopsResponse.data.shop)
+      }
+      catch
+      {
+        setShopRating(0)
+      }
 
       const shopItemsResponse = await axios.post(process.env.REACT_APP_INVENTORY_URL+"show_shop_stock/", JSON.stringify({'shop_id':shop.shop_id})) 
       setShopItems(shopItemsResponse.data.shopItems) 
@@ -38,7 +49,7 @@ const ShopPage = () =>
 
 
   useEffect(() => {
-      fetch_orders()
+    fetch_shops()
     }, [])
 
 
@@ -101,18 +112,21 @@ const ShopPage = () =>
       setLoading(true);
       const feedbackResponse = await axios.post(process.env.REACT_APP_USER_URL+"post_feedback/", JSON.stringify({'shopkeeper_id':shop.shop_id,'customer_id':userId,'rating':feedback.rating,'comments':feedback.comments})) 
       setLoading(false);
-      if(feedbackResponse.status==200)
+      if(feedbackResponse.data.status==200)
       {
         setSuccessSnackbar(true);
-        setSnackbarMessage(feedbackResponse.data.message);
-        setOpenSnackbar(true);
       }
       else
       {
         setSuccessSnackbar(false);
-        setSnackbarMessage("Error occurred while placing order. Please try again later.");
-        setOpenSnackbar(true);
       }
+      setSnackbarMessage(feedbackResponse.data.message);
+      setOpenSnackbar(true);
+      setFeedback({
+        rating:0,
+        comments:"",
+      })
+      fetch_shops()
     }
 
   return (
@@ -132,7 +146,7 @@ const ShopPage = () =>
                     <Typography variant="h5" style={{color:'var(--orange)'}}>
                         {shop.name} 
                     </Typography> 
-                    <Rating name="read-only" value={shop.rating} precision={0.5} readOnly />
+                    <Rating name="read-only" value={shopRating} precision={0.5} readOnly />
                     <br/>
                     </div>              
                   </Card>

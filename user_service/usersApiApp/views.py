@@ -44,9 +44,13 @@ def shop_view_feedback(request):
 def shop_details(request):
     data = json.loads(request.body.decode('utf-8'))
     shop_id = data['shop_id']
-    shop_details = shops_table.objects.filter(shopkeeper_id = shop_id).values()[0]
     
-    shop_name = shop_details['name']
+    shop_details = {}
+    shop_name = None
+    shops = shops_table.objects.filter(shopkeeper_id = shop_id).values().count()
+    if shops>0:
+        shop_details=shops_table.objects.filter(shopkeeper_id = shop_id).values()[0] 
+        shop_name = shop_details['name']
     
     reviewCount = 0
     feedbacks = feedback_table.objects.filter(shopkeeper_id = shop_id).values()
@@ -82,11 +86,14 @@ def post_feedback(request):
     data = json.loads(request.body.decode('utf-8'))
     customer_id = data["customer_id"]
     shopkeeper_id = data['shopkeeper_id']
+    orders_count = orders_table.objects.filter(shopkeeper_id = shopkeeper_id, customer_id=customer_id).count()
+    if orders_count==0:
+        return Response({'message': 'Please place at least one order to give feedback.', "status":404})
     rating =  data["rating"]
     comments = data["comments"]
     response = feedback_table(customer_id_id = customer_id, shopkeeper_id_id = shopkeeper_id, rating = rating, comments = comments)
     response.save()
-    return Response({'message': 'Feedback added successfully!'})
+    return Response({'message': 'Feedback added successfully!', "status":200})
 
 @api_view(['GET'])
 def pending_orders(request):
@@ -100,7 +107,6 @@ def pending_orders(request):
 @api_view(['POST'])
 def shoplist(request):
     data = shops_table.objects.all().values()
-    inventory = inventory_table.objects.all().values()
     valid_shops = []
     for shop in data:
         shop_id = shop["shopkeeper_id_id"]
@@ -113,6 +119,7 @@ def shoplist(request):
                 if item["quantity"]>0:
                     valid_shops.append(item["shopkeeper_id_id"])
                     break
+                
     shops = []
     for shop in valid_shops:
         shop_name = shops_table.objects.filter(shopkeeper_id = shop).values()
