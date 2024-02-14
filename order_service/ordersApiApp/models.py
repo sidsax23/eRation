@@ -67,7 +67,7 @@ class feedback_table(models.Model):
     customer_id = models.ForeignKey(users_table, on_delete=models.CASCADE, related_name='customer_feedback', db_column="customer_id")
     shopkeeper_id = models.ForeignKey(users_table, on_delete=models.CASCADE, related_name='shopkeeper_feedback',  db_column="shopkeeper_id")
     rating = models.IntegerField()
-    comments = models.CharField(max_length=100)
+    comments = models.CharField(max_length=100, null=True, blank=True)
     
     class Meta:
         db_table = 'feedback_table'
